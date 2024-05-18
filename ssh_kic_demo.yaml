@@ -1,28 +1,42 @@
+apiVersion: k8s.nginx.org/v1
+kind: TransportServer
+metadata:
+  name: ssh-app
+spec:
+  listener:
+    name: ssh-app
+    protocol: TCP
+  upstreams:
+  - name: ssh-app
+    service: ssh-app
+    port: 22
+  action:
+    pass: ssh-app
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: ssh
+  name: ssh-app
 spec:
   ports:
-  - name: ssh
+  - name: ssh-app
     port: 22
   selector:
-    app: ssh
+    app: ssh-app
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ssh
+  name: ssh-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ssh
+      app: ssh-app
   template:
     metadata:
       labels:
-        app: ssh
+        app: ssh-app
     spec:
       containers:
       - image: testcontainers/sshd:1.2.0
